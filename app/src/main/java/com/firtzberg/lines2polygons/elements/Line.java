@@ -103,8 +103,9 @@ public class Line implements Parcelable {
         int lineLength = vector.manhattanDistance();
         int offsetLength = offset.manhattanDistance();
         if (includingEdges)
-            return offsetLength <= lineLength;
-        else return offsetLength > 0 && offsetLength < lineLength;
+            return offsetLength > -Point.GRANULARITY && offsetLength < lineLength + Point.GRANULARITY;
+        else
+            return offsetLength > Point.GRANULARITY && offsetLength < lineLength - Point.GRANULARITY;
     }
 
     /**
@@ -139,7 +140,7 @@ public class Line implements Parcelable {
      */
     public Point intersection(Line line, boolean includingEdges) {
         float div = line.vector.y * vector.x - line.vector.x * vector.y;
-        if (div == 0)
+        if (-Point.GRANULARITY * Point.GRANULARITY < div && div < Point.GRANULARITY * Point.GRANULARITY)
             return null;
 
         // calculate differences

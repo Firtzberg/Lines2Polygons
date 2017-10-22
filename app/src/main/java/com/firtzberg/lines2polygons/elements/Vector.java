@@ -33,7 +33,8 @@ public class Vector extends Point {
      * @return True when this and vector are parallel, false otherwise.
      */
     public boolean isParallel(Vector vector) {
-        return (this.x * vector.y - vector.x * this.y) < GRANULARITY * GRANULARITY;
+        float span = this.x * vector.y - vector.x * this.y;
+        return -GRANULARITY * GRANULARITY < span && span < GRANULARITY * GRANULARITY;
     }
 
     /**
@@ -45,15 +46,15 @@ public class Vector extends Point {
     public boolean sameOrientation(Vector vector) {
         if (!isParallel(vector))
             return false;
-        if (x < GRANULARITY) {
+        if (x < -GRANULARITY) {
             return vector.x <= GRANULARITY;
         } else if (x > GRANULARITY) {
-            return vector.x >= GRANULARITY;
+            return vector.x >= -GRANULARITY;
         } else {
-            if (y < GRANULARITY) {
+            if (y < -GRANULARITY) {
                 return vector.y <= GRANULARITY;
             } else if (y > GRANULARITY) {
-                return vector.y >= GRANULARITY;
+                return vector.y >= -GRANULARITY;
             } else {
                 return true;
             }
