@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="GridView">
+        <attr name="paperColor" format="color" />
+        <attr name="lineColor" format="color" />
+        <attr name="candidateColor" format="color" />
+    </declare-styleable>
+</resources>
