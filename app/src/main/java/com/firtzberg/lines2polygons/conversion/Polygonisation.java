@@ -69,7 +69,7 @@ public class Polygonisation {
                 candidateCount = fragmentCandidates.size();
                 for (int candidateIndex = 0; candidateIndex < candidateCount; candidateIndex++) {
                     // Check for intersection, edges inclusive to detect T junctions.
-                    intersection = fragments.get(existingFragmentIndex).intersection(line, true);
+                    intersection = fragments.get(existingFragmentIndex).intersection(fragmentCandidates.get(candidateIndex), true);
                     if (intersection != null) {
                         //Split existing fragment if its edge is not part of a T or V junction.
                         existingFragment = fragments.get(existingFragmentIndex);
@@ -239,14 +239,14 @@ public class Polygonisation {
 
             // find closest leaving line side to the left.
             int pathIndex = -1;
-            double maximalAngle = -1;
+            double minAngle = Double.MAX_VALUE;
             double currentAngle;
             for (int i = 0; i < availableLinks.size(); i++) {
                 currentAngle = availableLinks.get(i).path.line.vector.getAngle() - referenceAngle;
-                if (currentAngle <= -0.001)// a threshold to avoid always going back the same way.
+                if (currentAngle <= 0.01)// a threshold to avoid always going back the same way.
                     currentAngle += 2 * Math.PI;
-                if (currentAngle > maximalAngle) {
-                    maximalAngle = currentAngle;
+                if (currentAngle < minAngle) {
+                    minAngle = currentAngle;
                     pathIndex = i;
                 }
             }
