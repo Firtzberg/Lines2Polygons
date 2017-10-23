@@ -283,6 +283,8 @@ public class GridView extends View {
                     break;
                 case Erase:
                     grid.Erase(tmp);
+                    // invalidate view to make sure candidate line is removed.
+                    this.invalidate();
                     break;
             }
         }
