@@ -76,8 +76,8 @@ public class Vector extends Point {
      *
      * @return Manhattan distance of vector.
      */
-    public int manhattanDistance() {
-        int distance = 0;
+    public float manhattanDistance() {
+        float distance = 0;
         if (x > 0)
             distance += x;
         else

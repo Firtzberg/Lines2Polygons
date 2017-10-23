@@ -100,8 +100,8 @@ public class Line implements Parcelable {
         Vector offset = new Vector(start, point);
         if (!vector.sameOrientation(offset))
             return false;
-        int lineLength = vector.manhattanDistance();
-        int offsetLength = offset.manhattanDistance();
+        float lineLength = vector.manhattanDistance();
+        float offsetLength = offset.manhattanDistance();
         if (includingEdges)
             return offsetLength > -Point.GRANULARITY && offsetLength < lineLength + Point.GRANULARITY;
         else
