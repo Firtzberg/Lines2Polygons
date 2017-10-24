@@ -9,7 +9,9 @@ import com.firtzberg.lines2polygons.elements.Polygon;
 import com.firtzberg.lines2polygons.elements.Vector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by hrvoje on 15.10.17..
@@ -100,8 +102,8 @@ public class Polygonisation {
      * @param lines Undirected lines.
      * @return Set of nodes each containing every line that starts or ends in it with start point inside the node.
      */
-    private static List<Node> linesToNodes(Iterable<Line> lines) {
-        List<Node> nodes = new ArrayList<>();
+    private static Set<Node> linesToNodes(Iterable<Line> lines) {
+        Set<Node> nodes = new HashSet<>();
         Node startNode;
         Node endNode;
         Point currentPosition;
@@ -110,12 +112,12 @@ public class Polygonisation {
             // Find start and end node
             startNode = null;
             endNode = null;
-            for (int i = 0; i < nodes.size(); i++) {
-                currentPosition = nodes.get(i).position;
+            for (Node node : nodes) {
+                currentPosition = node.position;
                 if (currentPosition.equals(line.start))
-                    startNode = nodes.get(i);
+                    startNode = node;
                 if (currentPosition.equals(line.end))
-                    endNode = nodes.get(i);
+                    endNode = node;
                 if (startNode != null && endNode != null)
                     break;
             }
@@ -145,17 +147,17 @@ public class Polygonisation {
      * @param nodes Nodes containing line sides from which polygons are constructed.
      * @return Set of constructed polygons.
      */
-    private static List<Polygon> nodesToPolygons(List<Node> nodes) {
+    private static List<Polygon> nodesToPolygons(Set<Node> nodes) {
         List<Polygon> polygons = new ArrayList<>();
         Node node;
         Node.Link link;
         Polygon polygon;
         boolean success;
         while (!nodes.isEmpty()) {
+            // start polygon anywhere
+            node = nodes.iterator().next();
             polygon = new Polygon();
 
-            // start polygon anywhere
-            node = nodes.get(0);
             link = node.walkAnywhere();
             polygon.addSide(link.path);
             // walk left until polygon is complete
@@ -186,7 +188,7 @@ public class Polygonisation {
         /**
          * Unconsumed set of line sides leaving the junction point.
          */
-        protected final List<Link> availableLinks;
+        protected final Set<Link> availableLinks;
 
         /**
          * Creates a new junction point.
@@ -195,7 +197,7 @@ public class Polygonisation {
          */
         public Node(Point point) {
             position = point;
-            availableLinks = new ArrayList<>();
+            availableLinks = new HashSet<>();
         }
 
         /**
@@ -234,23 +236,21 @@ public class Polygonisation {
                 referenceAngle -= 2 * Math.PI;
 
             // find closest leaving line side to the left.
-            int pathIndex = -1;
+            Link closestLink = null;
             double minAngle = Double.MAX_VALUE;
             double currentAngle;
-            for (int i = 0; i < availableLinks.size(); i++) {
-                currentAngle = availableLinks.get(i).path.line.vector.getAngle() - referenceAngle;
+            for (Link currentLink : availableLinks) {
+                currentAngle = currentLink.path.line.vector.getAngle() - referenceAngle;
                 if (currentAngle <= 0.01)// a threshold to avoid always going back the same way.
                     currentAngle += 2 * Math.PI;
                 if (currentAngle < minAngle) {
                     minAngle = currentAngle;
-                    pathIndex = i;
+                    closestLink = currentLink;
                 }
             }
-            if (pathIndex == -1)
-                return null;
-            Link path = availableLinks.get(pathIndex);
-            availableLinks.remove(pathIndex);
-            return path;
+            if (closestLink != null)
+                availableLinks.remove(closestLink);
+            return closestLink;
         }
 
         /**
@@ -261,7 +261,7 @@ public class Polygonisation {
         public Link walkAnywhere() {
             if (availableLinks.isEmpty())
                 return null;
-            return availableLinks.get(0);
+            return availableLinks.iterator().next();
         }
 
         @Override

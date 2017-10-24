@@ -23,7 +23,7 @@ In order to draw the polygons they need to be cut into triangles. The ear clippi
 <p>Except the polygons representing the enclosed areas inside the frame
 a polygon spanning over the frame in the opposite traversal direction is constructed
 representing the area outside the frame.
-This polygon is always the first among the returned.</p>
+</p>
 <p>A set of lines not connected to the frame will in addition to the polygons representing the internal areas
 also generate a polygon with opposite traversal direction representing the boundaries of the separate line group.</p>
 <p>The polygon triangulation fails when the area spanned by several adjacent line sides is 0.</p>
