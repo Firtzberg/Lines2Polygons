@@ -158,10 +158,6 @@ public class Polygonisation {
             node = nodes.get(0);
             link = node.walkAnywhere();
             polygon.addSide(link.path);
-            // remove cleared nodes
-            if (node.isCleared()) {
-                nodes.remove(node);
-            }
             // walk left until polygon is complete
             while (!polygon.isComplete()) {
                 // visit next node
@@ -258,16 +254,14 @@ public class Polygonisation {
         }
 
         /**
-         * Consume any line side leaving this node.
+         * Gets any available line side leaving this node.
          *
-         * @return consumed line side or null if node is cleared.
+         * @return Line side or null if node is cleared.
          */
         public Link walkAnywhere() {
             if (availableLinks.isEmpty())
                 return null;
-            Link path = availableLinks.get(0);
-            availableLinks.remove(0);
-            return path;
+            return availableLinks.get(0);
         }
 
         @Override

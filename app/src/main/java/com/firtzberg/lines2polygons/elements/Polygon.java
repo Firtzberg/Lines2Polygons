@@ -36,7 +36,7 @@ public class Polygon {
      * Adds a new side to the polygon.
      *
      * @param lineSide Line side to be occupied by the polygon.
-     * @return True if line side is successfully appended to the previous line sides,
+     * @return True if line side is successfully appended to the previous line sides or closes polygon,
      * false if polygon is already complete or
      * start point of line side does not match end point of last line side.
      */
@@ -47,13 +47,14 @@ public class Polygon {
             return false;
         if (!sides.isEmpty() && !sides.get(sides.size() - 1).line.end.equals(lineSide.line.start))
             return false;
-        lineSide.setAttachedPolygon(this);
-        sides.add(lineSide);
         Log.d("Polygon construction", "Added side " + lineSide.line);
-        complete = sides.get(0).line.start.equals(lineSide.line.end);
+        complete = sides.size() > 0 && sides.get(0).line.equals(lineSide.line);
         if (complete) {
             Log.d("Polygon construction", "Completed");
             optimisedBorders = optimiseBorders();
+        } else {
+            sides.add(lineSide);
+            lineSide.setAttachedPolygon(this);
         }
         return true;
     }
@@ -84,7 +85,7 @@ public class Polygon {
     /**
      * Checks whether polygon is complete.
      *
-     * @return True when sides create closed loop, false otherwise.
+     * @return True when last added side matches first, false otherwise.
      */
     public final boolean isComplete() {
         return complete;
@@ -95,7 +96,6 @@ public class Polygon {
      * <p>Do not edit the array.</p>
      *
      * @return Null if polygon is incomplete or edges of polygon.
-     * @
      */
     public final Point[] getBorders() {
         return optimisedBorders;
